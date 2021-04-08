@@ -5,6 +5,12 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from webdriver_manager.chrome import ChromeDriverManager
 
 '''
 import requests
@@ -21,33 +27,43 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 '''
 
-page = requests.get("https://wikipedia.com/").text
-soup = BeautifulSoup(page,'lxml')
-print(soup.prettify())
 
-print(soup.get_text())
+driver = webdriver.Chrome(executable_path='E:\Download\chromedriver_win32\chromedriver.exe')
+driver.get('https://www.spectrum.com/mobile')
+
+soup = driver.find_element_by_xpath("/html/body").text
+
+print(soup)
 
 wordlist = []
 
-words = soup.get_text().split()
+words = soup.split()
 
+symbols = "!@#$%^&*()_-+={[}]|\;:\"<>?/., "
+misc = ['a', 'an', 'the', 'of', 'in', 'for', 'and', 'with', 'or', 'by', 'to', 'from']
 for word in words:
-    if word != "":
-        wordlist.append(word)
+    for i in range(len(symbols)):
+        #word = word.replace(symbols[i],"")
+        if not word in misc:
+            wordlist.append(word)
 
-dict_ = {'key': 0 }
-dict_.append
+d = {}
+for w in wordlist:
+    if w in d:
+        d[w] += 1
+    else:
+        d[w] = 1
 
-for key in dict_.key():
-    for word in wordlist:
-        if key != word:
-            dict_.append(key, 1)
-        else:
-            dict_.append(key, (dict_.values()+1))
-    
+print(d)
 
-        
+data = pd.DataFrame({
+    'word': d.keys(),
+    'count':d.values()
+})
+data.sort_values(by=['count'], ascending=False)
 
+count = Counter(d)
+print(count.most_common(10))
 
 
 

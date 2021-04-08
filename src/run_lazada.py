@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-
+from webdriver_manager.chrome import ChromeDriverManager
 
 import os
 os.environ["LANG"] = "en_US.UTF-8"
@@ -38,6 +38,9 @@ head = driver.find_elements_by_tag_name('head')
 for word in head:
     if word.text != "":
         print(word.text)
+
+
+print(driver.find_element_by_xpath("/html/body").text)
 
 
 words = driver.find_elements_by_tag_name('h2')
